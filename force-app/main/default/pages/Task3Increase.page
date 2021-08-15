@@ -1,0 +1,42 @@
+<apex:page controller="Task3Remote" action="{!initRecordById}">
+    <script type="text/javascript">
+    function UpdateRemoteAccount() {
+        var type = document.getElementById('record_main').getAttribute('type');
+        var recordId = document.getElementById('record_main').getAttribute('recordId');
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.Task3Remote.UpdateAccountContact}',
+            type,
+            recordId,
+            function(result, event){
+                if (event.status) {
+                    document.getElementById('counter').innerHTML = "Counter Of Type Number: " + result;
+                } else if (event.type === 'exception') {
+                    document.getElementById("responseErrors").innerHTML = 
+                        event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                } else {
+                    document.getElementById("responseErrors").innerHTML = event.message;
+                }
+            }, 
+            {escape: true}
+        );
+        
+    }
+    function afterSave(){
+			window.opener.reloadRecords();
+			window.close();
+		}
+    </script>
+    
+    <apex:form >
+        <apex:commandButton onclick="UpdateRemoteAccount()" value="Update counter" oncomplete="afterSave()"/>
+        <apex:pageBlock title="Update Counter">
+            <apex:pageBlockSection columns="1">
+                <label visible='false' recordId = '{!currentRecord.RecordId}' type='{!currentRecord.RecordType}' id = 'record_main'>Id : {!currentRecord.RecordId}</label>
+                <apex:outputLabel value="Record Name: ">{!currentRecord.RecordName}</apex:outputLabel>
+                <apex:outputLabel id="record_type" value="Record Type: ">{!currentRecord.RecordType}</apex:outputLabel>
+                <label id = 'counter'>Counter Of Type Number: {!currentRecord.CounterOfTypeNumber}</label>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <div id="responseErrors"></div>
+</apex:page>

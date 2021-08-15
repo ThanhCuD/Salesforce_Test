@@ -1,0 +1,20 @@
+<apex:page showHeader="false" sidebar="false" controller="AccountController" action="{!initRecordById}">
+	
+	<apex:form >
+        <apex:pageBlock title="View Detail">
+            <apex:pageBlockSection columns="1">
+                <apex:outputLabel value="Record Name: ">{!currentRecord.RecordName}</apex:outputLabel>
+				<apex:outputLabel value="Record Type: ">{!currentRecord.RecordType}</apex:outputLabel>
+				<apex:outputLabel value="CounterOfTypeNumber: ">{!currentRecord.CounterOfTypeNumber}</apex:outputLabel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+	</apex:form>
+	<script type="text/javascript">
+		function afterSave(){
+			window.opener.reloadRecords();
+			window.close();
+		}
+	</script>
+</apex:page>
+

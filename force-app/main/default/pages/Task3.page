@@ -1,0 +1,50 @@
+<apex:page controller="AccountController">
+	<apex:form >
+		<apex:inputText value="{!searchCondition}" id="searchInput"/>
+		<apex:commandButton action="{!searchAccount}" value="Search" reRender="resultTableId"/>
+		<apex:outputPanel id="resultTableId">
+			<apex:variable var="rowNum" value="{!0}" />
+			<table>
+				<tr>
+					<th>STT</th>
+					<th>Record Name</th>
+                    <th>Record Type</th>
+                    <th>Counter</th>
+					<th>Click to update counter</th>
+				</tr>
+				<apex:repeat value="{!data}" var="item">
+					<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+					<tr>
+						<td>{!rowNum}</td>
+						<td>{!item.RecordName}</td>
+                        <td>{!item.RecordType}</td>
+                        <td>{!item.CounterOfTypeNumber}</td>
+						<td>
+							<apex:commandButton onclick="viewRecord('{!item.RecordId}','{!item.RecordType}'); return false;" value="Increment Counter" id="viewBtnId" />
+						</td>
+					</tr>
+        </apex:repeat>
+			</table>
+		</apex:outputPanel>
+		<apex:actionFunction action="{!searchAccount}" name="reloadRecords" reRender="resultTableId">
+		</apex:actionFunction>
+	</apex:form>
+	<script type="text/javascript">
+		function viewRecord(recordId,type)
+		{
+			console.log('recordId:' + recordId);
+			centeredPopup('/apex/Task3Increase?id='+recordId+'&type='+type,'Record',500,300,'yes');
+			window.onunload = refreshParent;
+			function refreshParent() {
+				window.opener.location.reload();
+			}
+		}
+		function centeredPopup(url,winName,w,h,scroll){
+			var LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+			var TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+			settings ='height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars='+scroll+',resizable'
+			var popupWindow = window.open(url,winName,settings)
+		}
+	</script>
+
+</apex:page>
